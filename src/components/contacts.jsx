@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ContactList from "./ContactList";
 import inputs from "../constants/inputs";
+import { v4 } from "uuid";
 
 export default function Contacts() {
   const [contacts, setContacts] = useState([]);
@@ -10,6 +11,7 @@ export default function Contacts() {
     lastName: "",
     email: "",
     phone: "",
+    id:""
   });
   const changeHandler = (event) => {
     const name = event.target.name;
@@ -27,7 +29,8 @@ export default function Contacts() {
       return;
     }
     setAlert("");
-    setContacts((contacts) => [...contacts, contact]);
+    const newContact={...contact,id:v4()}
+    setContacts((contacts) => [...contacts, newContact]);
     setContact({ name: "", lastName: "", email: "", phone: "" });
   };
 

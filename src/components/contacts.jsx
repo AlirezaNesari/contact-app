@@ -11,7 +11,7 @@ export default function Contacts() {
     lastName: "",
     email: "",
     phone: "",
-    id:""
+    id: "",
   });
   const changeHandler = (event) => {
     const name = event.target.name;
@@ -29,10 +29,15 @@ export default function Contacts() {
       return;
     }
     setAlert("");
-    const newContact={...contact,id:v4()}
+    const newContact = { ...contact, id: v4() };
     setContacts((contacts) => [...contacts, newContact]);
     setContact({ name: "", lastName: "", email: "", phone: "" });
   };
+  const deleteHandler = (id) => {
+    const newContacts =contacts.filter((contact)=>contact.id !== id)
+    setContacts(newContacts);
+  };
+
 
   return (
     <div>
@@ -50,7 +55,7 @@ export default function Contacts() {
       })}
       <button onClick={addHandler}>add Contact</button>
       <div>{alert && <p>{alert}</p>}</div>
-      <ContactList contacts={contacts} />
+      <ContactList contacts={contacts} deleteHandler={deleteHandler} />
     </div>
   );
 }

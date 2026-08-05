@@ -1,5 +1,5 @@
 export default function ContactItem({
-  item: { name, lastName, email, phone },
+  item: {id, name, lastName, email, phone },deleteHandler
 }) {
   return (
     <li >
@@ -14,7 +14,7 @@ export default function ContactItem({
         <span>آیکون</span>
         {phone}
       </p>
-      <button type="button">حذف</button>
+      <button onClick={()=>deleteHandler(id)}>حذف</button>
     </li>
   );
 }

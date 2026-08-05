@@ -1,3 +1,5 @@
+import ContactItem from "./contactItem";
+
 export default function ContactList({ contacts }) {
   return (
     <div>
@@ -5,20 +7,7 @@ export default function ContactList({ contacts }) {
       {contacts?.length ? (
         <ul>
           {contacts.map((contact) => (
-            <li key={contact.id}>
-              <p>
-                {contact.name} {contact.lastName}
-              </p>
-              <p>
-                <span>آیکون</span>
-                {contact.email}
-              </p>
-              <p>
-                <span>آیکون</span>
-                {contact.phone}
-              </p>
-              <button type="button">حذف</button>
-            </li>
+          <ContactItem key={contact.id} item={contact}/>
           ))}
         </ul>
       ) : (
@@ -27,4 +16,3 @@ export default function ContactList({ contacts }) {
     </div>
   );
 }
-

@@ -148,7 +148,17 @@ export default function Contacts() {
       contact.name.toLowerCase().includes(search.toLowerCase()),
     )
     .filter((contact) => (favoriteOnly ? contact.favorite : true));
+
   const sortedContacts = [...filteredContacts].sort((a, b) => {
+    
+    if (a.favorite && !b.favorite) {
+      return -1;
+    }
+
+    if (!a.favorite && b.favorite) {
+      return 1;
+    }
+
     if (sortType === "az") {
       return a.name.localeCompare(b.name);
     }
@@ -157,13 +167,7 @@ export default function Contacts() {
       return b.name.localeCompare(a.name);
     }
 
-    if (sortType === "newest") {
-      return b.id - a.id;
-    }
-
-    if (sortType === "oldest") {
-      return a.id - b.id;
-    }
+    return 0;
   });
 
   return (

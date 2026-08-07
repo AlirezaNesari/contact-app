@@ -19,6 +19,7 @@ export default function Contacts() {
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [search, setSearch] = useState("");
+  const [error, setError] = useState("");
 
   const isFirstRender = useRef(true);
 
@@ -43,7 +44,32 @@ export default function Contacts() {
     const value = event.target.value;
     setContact((contact) => ({ ...contact, [name]: value }));
   };
+  const validate = () => {
+    if (!contact.name.trim()) {
+      setError("Name is required");
+      return false;
+    }
+
+    if (!contact.phone.trim()) {
+      setError("Phone number is required");
+      return false;
+    }
+
+    if (contact.phone.length !== 11) {
+      setError("Phone number must be 11 digits");
+      return false;
+    }
+
+    if (!contact.email.includes("@")) {
+      setError("Invalid email");
+      return false;
+    }
+
+    setError("");
+    return true;
+  };
   const addHandler = () => {
+    if (!validate()) return;
     if (
       !contact.name ||
       !contact.lastName ||
@@ -101,9 +127,9 @@ export default function Contacts() {
     setIsEditing(true);
   };
 
-const filteredContacts = contacts.filter((contact) =>
-  contact.name.toLowerCase().includes(search.toLowerCase())
-);
+  const filteredContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <div className={styles.container}>
@@ -124,6 +150,7 @@ const filteredContacts = contacts.filter((contact) =>
           {isEditing ? "Update Contact" : "Add Contact"}
         </button>
       </div>
+      {error && <p className={styles.error}>{error}</p>}
       <div className={styles.alert}>{alert && <p>{alert}</p>}</div>
 
       <input
@@ -134,7 +161,7 @@ const filteredContacts = contacts.filter((contact) =>
       />
 
       <ContactList
-         contacts={filteredContacts}
+        contacts={filteredContacts}
         deleteHandler={deleteHandler}
         editHandler={editHandler}
       />

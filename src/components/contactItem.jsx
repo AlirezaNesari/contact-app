@@ -8,13 +8,18 @@ export default function ContactItem({
   deleteHandler,
   editHandler,
   favoriteHandler,
+  selectHandler,
+  selectedContacts,
 }) {
-
   const { id, name, lastName, email, phone } = contact;
 
   return (
     <li className={Styles.item}>
-
+      <input
+        type="checkbox"
+        checked={selectedContacts.includes(contact.id)}
+        onChange={() => selectHandler(contact.id)}
+      />
       <button onClick={() => favoriteHandler(id)}>
         {contact.favorite ? "⭐" : "☆"}
       </button>
@@ -33,21 +38,11 @@ export default function ContactItem({
         {phone}
       </p>
 
-
-      <button onClick={() => editHandler(contact)}>
-        ✏️
-      </button>
-
+      <button onClick={() => editHandler(contact)}>✏️</button>
 
       <button onClick={() => deleteHandler(id)}>
-        <img 
-          src={trashIcon} 
-          alt="Delete" 
-          width={22} 
-          height={22} 
-        />
+        <img src={trashIcon} alt="Delete" width={22} height={22} />
       </button>
-
     </li>
   );
 }

@@ -22,24 +22,23 @@ export default function Contacts() {
   const [error, setError] = useState("");
   const [sortType, setSortType] = useState("newest");
   const [favoriteOnly, setFavoriteOnly] = useState(false);
+  const [selectedContacts, setSelectedContacts] = useState([]);
 
   const isFirstRender = useRef(true);
 
   useEffect(() => {
-  const savedContacts = JSON.parse(localStorage.getItem("contacts"));
+    const savedContacts = JSON.parse(localStorage.getItem("contacts"));
 
-  if (savedContacts) {
+    if (savedContacts) {
+      const updatedContacts = savedContacts.map((contact) => ({
+        ...contact,
+        createdAt: contact.createdAt || Date.now(),
+        favorite: contact.favorite || false,
+      }));
 
-    const updatedContacts = savedContacts.map((contact) => ({
-      ...contact,
-      createdAt: contact.createdAt || Date.now(),
-      favorite: contact.favorite || false,
-    }));
-
-    setContacts(updatedContacts);
-  }
-
-}, []);
+      setContacts(updatedContacts);
+    }
+  }, []);
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -122,6 +121,11 @@ export default function Contacts() {
     setSelectedId(id);
     setShowModal(true);
   };
+  const deleteSelectedHandler = () => {
+    if (selectedContacts.length === 0) return;
+
+    setShowModal(true);
+  };
   const confirmDelete = () => {
     const newContacts = contacts.filter((contact) => contact.id !== selectedId);
 
@@ -130,6 +134,17 @@ export default function Contacts() {
     setSelectedId(null);
     setShowModal(false);
   };
+  const confirmDeleteSelected = () => {
+    const updatedContacts = contacts.filter(
+      (contact) => !selectedContacts.includes(contact.id),
+    );
+
+    setContacts(updatedContacts);
+
+    setSelectedContacts([]);
+    setShowModal(false);
+  };
+
   const cancelDelete = () => {
     setSelectedId(null);
     setShowModal(false);
@@ -152,6 +167,16 @@ export default function Contacts() {
     setContacts(updatedContacts);
   };
 
+  const selectHandler = (id) => {
+    if (selectedContacts.includes(id)) {
+      setSelectedContacts(
+        selectedContacts.filter((contactId) => contactId !== id),
+      );
+    } else {
+      setSelectedContacts([...selectedContacts, id]);
+    }
+  };
+
   const filteredContacts = contacts
     .filter((contact) =>
       contact.name.toLowerCase().includes(search.toLowerCase()),
@@ -159,30 +184,24 @@ export default function Contacts() {
     .filter((contact) => (favoriteOnly ? contact.favorite : true));
 
   const sortedContacts = [...filteredContacts].sort((a, b) => {
+    if (sortType === "az") {
+      return a.name.localeCompare(b.name);
+    }
 
-  if (sortType === "az") {
-    return a.name.localeCompare(b.name);
-  }
+    if (sortType === "za") {
+      return b.name.localeCompare(a.name);
+    }
 
+    if (sortType === "newest") {
+      return b.createdAt - a.createdAt;
+    }
 
-  if (sortType === "za") {
-    return b.name.localeCompare(a.name);
-  }
+    if (sortType === "oldest") {
+      return a.createdAt - b.createdAt;
+    }
 
-
-  if (sortType === "newest") {
-    return b.createdAt - a.createdAt;
-  }
-
-
-  if (sortType === "oldest") {
-    return a.createdAt - b.createdAt;
-  }
-
-
-  return 0;
-
-});
+    return 0;
+  });
 
   return (
     <div className={styles.container}>
@@ -224,16 +243,29 @@ export default function Contacts() {
       <button onClick={() => setFavoriteOnly(!favoriteOnly)}>
         {favoriteOnly ? "Show All" : "Favorite Only"}
       </button>
+      {selectedContacts.length > 0 && (
+        <button onClick={deleteSelectedHandler}>
+          Delete Selected ({selectedContacts.length})
+        </button>
+      )}
       <ContactList
         contacts={sortedContacts}
         deleteHandler={deleteHandler}
         editHandler={editHandler}
         favoriteHandler={favoriteHandler}
+        selectHandler={selectHandler}
+        selectedContacts={selectedContacts}
       />
       {showModal && (
         <Modal
-          message="Are you sure you want to delete this contact?"
-          onConfirm={confirmDelete}
+          message={
+            selectedContacts.length
+              ? "Are you sure you want to delete selected contacts?"
+              : "Are you sure you want to delete this contact?"
+          }
+          onConfirm={
+            selectedContacts.length ? confirmDeleteSelected : confirmDelete
+          }
           onCancel={cancelDelete}
         />
       )}

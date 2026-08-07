@@ -1,7 +1,14 @@
 import ContactItem from "./contactItem";
 import Styles from "./ContactList.module.css";
 
-export default function ContactList({ contacts, deleteHandler, editHandler,favoriteHandler }) {
+export default function ContactList({
+  contacts,
+  deleteHandler,
+  editHandler,
+  favoriteHandler,
+  selectHandler,
+  selectedContacts,
+}) {
   return (
     <div className={Styles.container}>
       <h3>ContactList</h3>
@@ -14,6 +21,8 @@ export default function ContactList({ contacts, deleteHandler, editHandler,favor
               deleteHandler={deleteHandler}
               editHandler={editHandler}
               favoriteHandler={favoriteHandler}
+              selectHandler={selectHandler}
+              selectedContacts={selectedContacts}
             />
           ))}
         </ul>

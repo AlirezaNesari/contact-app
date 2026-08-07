@@ -26,12 +26,20 @@ export default function Contacts() {
   const isFirstRender = useRef(true);
 
   useEffect(() => {
-    const savedContacts = JSON.parse(localStorage.getItem("contacts"));
+  const savedContacts = JSON.parse(localStorage.getItem("contacts"));
 
-    if (savedContacts) {
-      setContacts(savedContacts);
-    }
-  }, []);
+  if (savedContacts) {
+
+    const updatedContacts = savedContacts.map((contact) => ({
+      ...contact,
+      createdAt: contact.createdAt || Date.now(),
+      favorite: contact.favorite || false,
+    }));
+
+    setContacts(updatedContacts);
+  }
+
+}, []);
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -96,6 +104,7 @@ export default function Contacts() {
         ...contact,
         id: v4(),
         favorite: false,
+        createdAt: Date.now(),
       };
 
       setContacts((contacts) => [...contacts, newContact]);
@@ -150,25 +159,30 @@ export default function Contacts() {
     .filter((contact) => (favoriteOnly ? contact.favorite : true));
 
   const sortedContacts = [...filteredContacts].sort((a, b) => {
-    
-    if (a.favorite && !b.favorite) {
-      return -1;
-    }
 
-    if (!a.favorite && b.favorite) {
-      return 1;
-    }
+  if (sortType === "az") {
+    return a.name.localeCompare(b.name);
+  }
 
-    if (sortType === "az") {
-      return a.name.localeCompare(b.name);
-    }
 
-    if (sortType === "za") {
-      return b.name.localeCompare(a.name);
-    }
+  if (sortType === "za") {
+    return b.name.localeCompare(a.name);
+  }
 
-    return 0;
-  });
+
+  if (sortType === "newest") {
+    return b.createdAt - a.createdAt;
+  }
+
+
+  if (sortType === "oldest") {
+    return a.createdAt - b.createdAt;
+  }
+
+
+  return 0;
+
+});
 
   return (
     <div className={styles.container}>

@@ -16,6 +16,7 @@ export default function ContactItem({
   return (
     <li className={Styles.item}>
       <input
+        className={Styles.checkbox}
         type="checkbox"
         checked={selectedContacts.includes(contact.id)}
         onChange={() => selectHandler(contact.id)}

@@ -52,3 +52,9 @@
 .actions button:hover {
   transform: scale(1.1);
 }
+.checkbox {
+  width: 18px;
+  height: 18px;
+
+  cursor: pointer;
+}

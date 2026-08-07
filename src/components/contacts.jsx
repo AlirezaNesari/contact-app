@@ -224,30 +224,42 @@ export default function Contacts() {
           {isEditing ? "Update Contact" : "Add Contact"}
         </button>
       </div>
+      <div className={styles.controls}>
+        <input
+          className={styles.searchBox}
+          type="text"
+          placeholder="Search contact..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-      <input
-        type="text"
-        placeholder="Search contact..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <select value={sortType} onChange={(e) => setSortType(e.target.value)}>
-        <option value="newest">Newest</option>
+        <select
+          className={styles.sortSelect}
+          value={sortType}
+          onChange={(e) => setSortType(e.target.value)}
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="az">Name A-Z</option>
+          <option value="za">Name Z-A</option>
+        </select>
 
-        <option value="oldest">Oldest</option>
-
-        <option value="az">Name A-Z</option>
-
-        <option value="za">Name Z-A</option>
-      </select>
-      <button onClick={() => setFavoriteOnly(!favoriteOnly)}>
-        {favoriteOnly ? "Show All" : "Favorite Only"}
-      </button>
-      {selectedContacts.length > 0 && (
-        <button onClick={deleteSelectedHandler}>
-          Delete Selected ({selectedContacts.length})
+        <button
+          className={styles.favoriteButton}
+          onClick={() => setFavoriteOnly(!favoriteOnly)}
+        >
+          {favoriteOnly ? "Show All" : "Favorite Only"}
         </button>
-      )}
+
+        {selectedContacts.length > 0 && (
+          <button
+            className={styles.deleteSelected}
+            onClick={deleteSelectedHandler}
+          >
+            Delete Selected ({selectedContacts.length})
+          </button>
+        )}
+      </div>
       <ContactList
         contacts={sortedContacts}
         deleteHandler={deleteHandler}

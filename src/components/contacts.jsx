@@ -20,6 +20,7 @@ export default function Contacts() {
   const [selectedId, setSelectedId] = useState(null);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
+  const [sortType, setSortType] = useState("newest");
 
   const isFirstRender = useRef(true);
 
@@ -130,9 +131,34 @@ export default function Contacts() {
   const filteredContacts = contacts.filter((contact) =>
     contact.name.toLowerCase().includes(search.toLowerCase()),
   );
+  const sortedContacts = [...filteredContacts].sort((a,b)=>{
+
+  if(sortType === "az"){
+    return a.name.localeCompare(b.name);
+  }
+
+
+  if(sortType === "za"){
+    return b.name.localeCompare(a.name);
+  }
+
+
+  if(sortType === "newest"){
+    return b.id - a.id;
+  }
+
+
+  if(sortType === "oldest"){
+    return a.id - b.id;
+  }
+
+
+});
 
   return (
     <div className={styles.container}>
+      {error && <p className={styles.error}>{error}</p>}
+      <div className={styles.alert}>{alert && <p>{alert}</p>}</div>
       <div className={styles.form}>
         {inputs.map((input, index) => {
           return (
@@ -150,8 +176,6 @@ export default function Contacts() {
           {isEditing ? "Update Contact" : "Add Contact"}
         </button>
       </div>
-      {error && <p className={styles.error}>{error}</p>}
-      <div className={styles.alert}>{alert && <p>{alert}</p>}</div>
 
       <input
         type="text"
@@ -159,9 +183,18 @@ export default function Contacts() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
+      <select value={sortType} onChange={(e) => setSortType(e.target.value)}>
+        <option value="newest">Newest</option>
+
+        <option value="oldest">Oldest</option>
+
+        <option value="az">Name A-Z</option>
+
+        <option value="za">Name Z-A</option>
+      </select>
 
       <ContactList
-        contacts={filteredContacts}
+        contacts={sortedContacts}
         deleteHandler={deleteHandler}
         editHandler={editHandler}
       />

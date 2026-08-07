@@ -14,6 +14,7 @@ export default function Contacts() {
     phone: "",
     id: "",
   });
+  const [isEditing, setIsEditing] = useState(false);
   const changeHandler = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -26,17 +27,43 @@ export default function Contacts() {
       !contact.email ||
       !contact.phone
     ) {
-      setAlert("please enter valid data!");
+      setAlert("Please enter valid data!");
       return;
     }
+
     setAlert("");
-    const newContact = { ...contact, id: v4() };
-    setContacts((contacts) => [...contacts, newContact]);
-    setContact({ name: "", lastName: "", email: "", phone: "" });
+
+    if (isEditing) {
+      const updatedContacts = contacts.map((item) =>
+        item.id === contact.id ? contact : item,
+      );
+
+      setContacts(updatedContacts);
+      setIsEditing(false);
+    } else {
+      const newContact = {
+        ...contact,
+        id: v4(),
+      };
+
+      setContacts((contacts) => [...contacts, newContact]);
+    }
+
+    setContact({
+      name: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      id: "",
+    });
   };
   const deleteHandler = (id) => {
     const newContacts = contacts.filter((contact) => contact.id !== id);
     setContacts(newContacts);
+  };
+  const editHandler = (selectedContact) => {
+    setContact(selectedContact);
+    setIsEditing(true);
   };
 
   return (
@@ -54,10 +81,16 @@ export default function Contacts() {
             />
           );
         })}
-        <button onClick={addHandler}>add Contact</button>
+        <button onClick={addHandler}>
+          {isEditing ? "Update Contact" : "Add Contact"}
+        </button>
       </div>
       <div className={styles.alert}>{alert && <p>{alert}</p>}</div>
-      <ContactList contacts={contacts} deleteHandler={deleteHandler} />
+      <ContactList
+        contacts={contacts}
+        deleteHandler={deleteHandler}
+        editHandler={editHandler}
+      />
     </div>
   );
 }

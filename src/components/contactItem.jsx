@@ -1,29 +1,34 @@
 import trashIcon from "../Icons/trash.svg";
 import phoneIcon from "../Icons/phone.svg";
 import emailIcon from "../Icons/email.svg";
-import Styles from "./ContactItem.module.css"
+import Styles from "./ContactItem.module.css";
 
-
-export default function ContactItem({
-  item: { id, name, lastName, email, phone },
-  deleteHandler,
-}) {
+export default function ContactItem({ item, deleteHandler, editHandler }) {
+  const { id, name, lastName, email, phone } = item;
   return (
     <li className={Styles.item}>
       <p>
         {name} {lastName}
       </p>
       <p>
-        <span><img src={emailIcon} alt="Email" width={20} height={20} /></span>
+        <span>
+          <img src={emailIcon} alt="Email" width={20} height={20} />
+        </span>
         {email}
       </p>
       <p>
-        <span><img src={phoneIcon} alt="Phone" width={20} height={20} /></span>
+        <span>
+          <img src={phoneIcon} alt="Phone" width={20} height={20} />
+        </span>
         {phone}
       </p>
-      <button onClick={() => deleteHandler(id)}>
-        <img src={trashIcon} alt="Delete" width={22} height={22} />
-      </button>
+      <div className={Styles.actions}>
+        <button onClick={() => editHandler(item)}>✏️</button>
+
+        <button onClick={() => deleteHandler(id)}>
+          <img src={trashIcon} alt="Delete" width={22} height={22} />
+        </button>
+      </div>
     </li>
   );
 }

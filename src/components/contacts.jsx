@@ -143,9 +143,11 @@ export default function Contacts() {
     setContacts(updatedContacts);
   };
 
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(search.toLowerCase()),
-  );
+  const filteredContacts = contacts
+    .filter((contact) =>
+      contact.name.toLowerCase().includes(search.toLowerCase()),
+    )
+    .filter((contact) => (favoriteOnly ? contact.favorite : true));
   const sortedContacts = [...filteredContacts].sort((a, b) => {
     if (sortType === "az") {
       return a.name.localeCompare(b.name);
@@ -201,7 +203,9 @@ export default function Contacts() {
 
         <option value="za">Name Z-A</option>
       </select>
-
+      <button onClick={() => setFavoriteOnly(!favoriteOnly)}>
+        {favoriteOnly ? "Show All" : "Favorite Only"}
+      </button>
       <ContactList
         contacts={sortedContacts}
         deleteHandler={deleteHandler}

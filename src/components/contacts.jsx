@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ContactList from "./ContactList";
 import inputs from "../constants/inputs";
 import { v4 } from "uuid";
 import styles from "./Contacts.module.css";
+import Modal from "./Modal";
 
 export default function Contacts() {
   const [contacts, setContacts] = useState([]);
@@ -15,6 +16,31 @@ export default function Contacts() {
     id: "",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    const savedContacts = JSON.parse(localStorage.getItem("contacts"));
+
+    if (savedContacts) {
+      setContacts(savedContacts);
+    }
+  }, []);
+ useEffect(() => {
+
+  if (isFirstRender.current) {
+    isFirstRender.current = false;
+    return;
+  }
+
+  localStorage.setItem(
+    "contacts",
+    JSON.stringify(contacts)
+  );
+
+}, [contacts]);
+
   const changeHandler = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -58,8 +84,20 @@ export default function Contacts() {
     });
   };
   const deleteHandler = (id) => {
-    const newContacts = contacts.filter((contact) => contact.id !== id);
+    setSelectedId(id);
+    setShowModal(true);
+  };
+  const confirmDelete = () => {
+    const newContacts = contacts.filter((contact) => contact.id !== selectedId);
+
     setContacts(newContacts);
+
+    setSelectedId(null);
+    setShowModal(false);
+  };
+  const cancelDelete = () => {
+    setSelectedId(null);
+    setShowModal(false);
   };
   const editHandler = (selectedContact) => {
     setContact(selectedContact);
@@ -91,6 +129,13 @@ export default function Contacts() {
         deleteHandler={deleteHandler}
         editHandler={editHandler}
       />
+      {showModal && (
+        <Modal
+          message="Are you sure you want to delete this contact?"
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+        />
+      )}
     </div>
   );
 }

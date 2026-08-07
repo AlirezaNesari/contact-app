@@ -3,32 +3,51 @@ import phoneIcon from "../Icons/phone.svg";
 import emailIcon from "../Icons/email.svg";
 import Styles from "./ContactItem.module.css";
 
-export default function ContactItem({ item, deleteHandler, editHandler }) {
-  const { id, name, lastName, email, phone } = item;
+export default function ContactItem({
+  contact,
+  deleteHandler,
+  editHandler,
+  favoriteHandler,
+}) {
+
+  const { id, name, lastName, email, phone } = contact;
+
   return (
     <li className={Styles.item}>
+
+      <button onClick={() => favoriteHandler(id)}>
+        {contact.favorite ? "⭐" : "☆"}
+      </button>
+
       <p>
         {name} {lastName}
       </p>
+
       <p>
-        <span>
-          <img src={emailIcon} alt="Email" width={20} height={20} />
-        </span>
+        <img src={emailIcon} alt="email" width={20} />
         {email}
       </p>
+
       <p>
-        <span>
-          <img src={phoneIcon} alt="Phone" width={20} height={20} />
-        </span>
+        <img src={phoneIcon} alt="phone" width={20} />
         {phone}
       </p>
-      <div className={Styles.actions}>
-        <button onClick={() => editHandler(item)}>✏️</button>
 
-        <button onClick={() => deleteHandler(id)}>
-          <img src={trashIcon} alt="Delete" width={22} height={22} />
-        </button>
-      </div>
+
+      <button onClick={() => editHandler(contact)}>
+        ✏️
+      </button>
+
+
+      <button onClick={() => deleteHandler(id)}>
+        <img 
+          src={trashIcon} 
+          alt="Delete" 
+          width={22} 
+          height={22} 
+        />
+      </button>
+
     </li>
   );
 }

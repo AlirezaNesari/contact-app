@@ -21,6 +21,7 @@ export default function Contacts() {
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
   const [sortType, setSortType] = useState("newest");
+  const [favoriteOnly, setFavoriteOnly] = useState(false);
 
   const isFirstRender = useRef(true);
 
@@ -94,6 +95,7 @@ export default function Contacts() {
       const newContact = {
         ...contact,
         id: v4(),
+        favorite: false,
       };
 
       setContacts((contacts) => [...contacts, newContact]);
@@ -128,32 +130,39 @@ export default function Contacts() {
     setIsEditing(true);
   };
 
+  const favoriteHandler = (id) => {
+    const updatedContacts = contacts.map((contact) =>
+      contact.id === id
+        ? {
+            ...contact,
+            favorite: !contact.favorite,
+          }
+        : contact,
+    );
+
+    setContacts(updatedContacts);
+  };
+
   const filteredContacts = contacts.filter((contact) =>
     contact.name.toLowerCase().includes(search.toLowerCase()),
   );
-  const sortedContacts = [...filteredContacts].sort((a,b)=>{
+  const sortedContacts = [...filteredContacts].sort((a, b) => {
+    if (sortType === "az") {
+      return a.name.localeCompare(b.name);
+    }
 
-  if(sortType === "az"){
-    return a.name.localeCompare(b.name);
-  }
+    if (sortType === "za") {
+      return b.name.localeCompare(a.name);
+    }
 
+    if (sortType === "newest") {
+      return b.id - a.id;
+    }
 
-  if(sortType === "za"){
-    return b.name.localeCompare(a.name);
-  }
-
-
-  if(sortType === "newest"){
-    return b.id - a.id;
-  }
-
-
-  if(sortType === "oldest"){
-    return a.id - b.id;
-  }
-
-
-});
+    if (sortType === "oldest") {
+      return a.id - b.id;
+    }
+  });
 
   return (
     <div className={styles.container}>
@@ -197,6 +206,7 @@ export default function Contacts() {
         contacts={sortedContacts}
         deleteHandler={deleteHandler}
         editHandler={editHandler}
+        favoriteHandler={favoriteHandler}
       />
       {showModal && (
         <Modal

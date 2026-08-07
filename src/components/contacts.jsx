@@ -18,7 +18,9 @@ export default function Contacts() {
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-const isFirstRender = useRef(true);
+  const [search, setSearch] = useState("");
+
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     const savedContacts = JSON.parse(localStorage.getItem("contacts"));
@@ -27,19 +29,14 @@ const isFirstRender = useRef(true);
       setContacts(savedContacts);
     }
   }, []);
- useEffect(() => {
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
-  if (isFirstRender.current) {
-    isFirstRender.current = false;
-    return;
-  }
-
-  localStorage.setItem(
-    "contacts",
-    JSON.stringify(contacts)
-  );
-
-}, [contacts]);
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+  }, [contacts]);
 
   const changeHandler = (event) => {
     const name = event.target.name;
@@ -104,6 +101,10 @@ const isFirstRender = useRef(true);
     setIsEditing(true);
   };
 
+const filteredContacts = contacts.filter((contact) =>
+  contact.name.toLowerCase().includes(search.toLowerCase())
+);
+
   return (
     <div className={styles.container}>
       <div className={styles.form}>
@@ -124,8 +125,16 @@ const isFirstRender = useRef(true);
         </button>
       </div>
       <div className={styles.alert}>{alert && <p>{alert}</p>}</div>
+
+      <input
+        type="text"
+        placeholder="Search contact..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
       <ContactList
-        contacts={contacts}
+         contacts={filteredContacts}
         deleteHandler={deleteHandler}
         editHandler={editHandler}
       />

@@ -15,11 +15,11 @@
 }
 .form input {
   width: 45%;
-cursor: pointer;
+  cursor: pointer;
   height: 40px;
   padding: 10px;
   margin: 5px;
-  border: 2px solid rgb(48, 79, 254 ,0.3);
+  border: 2px solid rgb(48, 79, 254, 0.3);
   border-radius: 10px;
   color: #304ffe;
   font-size: 1rem;
@@ -37,16 +37,16 @@ cursor: pointer;
   color: #fff;
   transition: 0.2s all ease-in-out;
 }
-.form button:hover{
-    box-shadow: #0c2ad487 0px 7px 29px 0px;
+.form button:hover {
+  box-shadow: #0c2ad487 0px 7px 29px 0px;
 }
-.alert p{
-    background-color: #ffebee;
-    color: rgba(203, 43, 43);
-    width: 100%;
-    padding:10px;
-    border-radius: 10px;
-    font-size: 1rem;
+.alert p {
+  background-color: #ffebee;
+  color: rgba(203, 43, 43);
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 1rem;
 }
 .searchBox {
   width: 100%;
@@ -110,7 +110,6 @@ cursor: pointer;
   transition: 0.3s;
 }
 
-
 .deleteSelected:hover {
   opacity: 0.85;
 }
@@ -149,13 +148,14 @@ cursor: pointer;
 .deleteSelected {
   height: 42px;
 }
-@media (max-width) {
-    .form input{
-        width: 90%;
-    }
-    .form button{
-        width: 90%;
-    }
+@media (max-width: 500px) {
+  .form input {
+    width: 90%;
+  }
+  .form button {
+    width: 90%;
+  }
+  .controls {
+    justify-content: center;
+  }
 }
-
-
